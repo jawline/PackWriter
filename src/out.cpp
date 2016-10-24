@@ -14,7 +14,7 @@ bool FOut::write(char const* data, size_t size) {
 		return false;
 	}
 
-	return fwrite(data, sizeof(char), size, out) != size;
+	return fwrite(data, sizeof(char), size, out) == size;
 }
 
 void FOut::close() {
