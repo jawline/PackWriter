@@ -90,3 +90,13 @@ bool Directory::From(std::shared_ptr<In> stream, Directory& dir) {
 
 	return true;
 }
+
+BufferedFileReader::BufferedFileReader(std::string const& file, Directory dir) {
+	_dataFile = file;
+	_dir = dir;
+}
+
+std::shared_ptr<In> BufferedFileReader::GetStream(std::string const& file) {
+
+	return nullptr;
+}

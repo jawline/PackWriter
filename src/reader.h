@@ -35,5 +35,14 @@ public:
 	static bool From(std::shared_ptr<In> stream, Directory& result);
 };
 
+class BufferedFileReader {
+private:
+	Directory _dir;
+	std::string _dataFile;
+
+public:
+	BufferedFileReader(std::string const& file, Directory dir);
+	std::shared_ptr<In> GetStream(std::string const& file);
+};
 
 #endif //_READER_DEF_H_
