@@ -35,7 +35,6 @@ bool Directory::NextOff(std::shared_ptr<In> stream, size_t& r) {
 
 bool Directory::Get(std::string const& name, Item& item) const {
 	for (unsigned int i = 0; i < items.size(); i++) {
-		printf("Check %s\n", items[i].first.c_str());
 		if (items[i].first == name) {
 			item = items[i].second;
 			return true;

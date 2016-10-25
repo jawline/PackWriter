@@ -39,4 +39,25 @@ int main(int argc, char** argv) {
 	}
 
 	printf("t1 data %zu %zu\n", t_str_off.start, t_str_off.size);
+
+	BufferedFileReader reader("./test.pack", dir);
+
+	auto stream = reader.GetStream("t3");
+
+	if (stream != nullptr) {
+		char buf;
+		size_t read;
+
+		std::string str;
+
+		while (stream->read(&buf, 1, read) && read == 1) {
+			str += buf;
+		}
+
+		printf("%s\n", str.c_str());
+
+		stream->close();
+	} else {
+		printf("Could not get a t1 stream\n");
+	}
 }
