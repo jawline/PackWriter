@@ -24,9 +24,14 @@ public:
 class FIn: public In {
 private:
 	FILE* in;
+	bool max_read_limit;
+	size_t max_read;
 
 public:
-	FIn(char const* file);
+	FIn(std::string const& file);
+	FIn(std::string const& file, size_t s_off);
+	FIn(std::string const& file, size_t s_off, size_t max_read);
+
 	~FIn();
 
 	virtual bool read(char* dest, size_t max_size, size_t& read);

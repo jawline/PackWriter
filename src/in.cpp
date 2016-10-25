@@ -24,8 +24,21 @@ void StringIn::close() {
 	pos = data.size();
 }
 
-FIn::FIn(char const* file) {
-	in = fopen(file, "rb");
+FIn::FIn(std::string const& file) {
+	in = fopen(file.c_str(), "rb");
+	max_read_limit = false;
+}
+
+FIn::FIn(std::string const& file, size_t start) {
+	in = fopen(file.c_str(), "rb");
+	fseek(in, start, SEEK_SET);
+}
+
+FIn::FIn(std::string const& file, size_t start, size_t max_read) {
+	in = fopen(file.c_str(), "rb");
+	fseek(in, start, SEEK_SET);
+	max_read_limit = true;
+	this->max_read = max_read;
 }
 
 FIn::~FIn() {
@@ -38,7 +51,13 @@ bool FIn::read(char* dest, size_t max_size, size_t& read) {
 		return false;
 	}
 
+	if (max_read_limit && max_size > max_read) {
+		max_size = max_read;
+	}
+
 	read = fread(dest, sizeof(char), max_size, in);
+
+	max_read -= read;
 
 	return read != max_size ? feof(in) : true;
 }
