@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "pack.h"
+#include "writer.h"
 
 int main(int argc, char** argv) {
 	printf("librepack test\n");
@@ -14,8 +14,9 @@ int main(int argc, char** argv) {
 	p.AddStream("t3", t_str3);
 
 	std::shared_ptr<Out> g_out = std::shared_ptr<Out>(new FOut("./test.pack"));
+	std::shared_ptr<Out> g_out_dir = std::shared_ptr<Out>(new FOut("./test.pack.dir"));
 
-	if (!p.Finalize(g_out, g_out)) {
+	if (!p.Finalize(g_out, g_out_dir)) {
 		printf("Error could not finalize properly\n");
 	}
 }
