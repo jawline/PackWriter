@@ -66,8 +66,7 @@ bool PackWriter::Finalize(std::shared_ptr<Out> const& data_out, std::shared_ptr<
 		return false;
 	}
 
-	dir_size += READER_LAST;
-
+	dir_size += sizeof(READER_LAST);
 
 	if (!directory_out->write((char*)&dir_size, sizeof(size_t))) {
 		return false;
