@@ -1,49 +1,80 @@
 #include <stdio.h>
+#include <string.h>
 #include "single.h"
 
+#define CHECK_TWO() if (i+2 >= argc) { return 1; }
+
 int main(int argc, char** argv) {
-	printf("librepack test\n");
 
-	std::shared_ptr<In> t_str = std::shared_ptr<In>(new StringIn("Hello World"));
-	std::shared_ptr<In> t_str2 = std::shared_ptr<In>(new StringIn("Other Data"));
-	std::shared_ptr<In> t_str3 = std::shared_ptr<In>(new StringIn("Third and craziest string"));
-
-	PackWriter p;
-	p.AddStream("t1", t_str);
-	p.AddStream("t2", t_str2);
-	p.AddStream("t3", t_str3);
-
-	std::shared_ptr<Out> g_out = std::shared_ptr<Out>(new FOut("./test.pack"));
-
-	if (!SingleOut(p, g_out)) {
-		printf("Error could not finalize properly\n");
-	}
-
-	g_out->close();
-
-	std::shared_ptr<BufferedFileReader> reader = SingleInFile("./test.pack");
-
-	if (!reader) {
-		printf("Could not open reader\n");
+	if (argc < 3) {
+		printf("Usage Example: %s pack -l name infile -l name infile -s name string outfile\n", argv[0]);
+		printf("Usage Example: %s read file element\n", argv[0]);
 		return 1;
 	}
 
-	auto stream = reader->GetStream("t3");
+	printf("librepack test\n");
 
-	if (stream != nullptr) {
-		char buf;
-		size_t read;
+	if (strcmp(argv[1], "pack") == 0) {
+		PackWriter p;
 
-		std::string str;
+		for (unsigned int i = 2; i < argc - 1; i++) {
+			if (strcmp(argv[i], "-l") == 0) {
+				CHECK_TWO();
+				p.AddStream(argv[i+1], std::shared_ptr<In>(new FIn(argv[i+2])));
+				i += 2;
+			} else if (strcmp(argv[i], "-s") == 0) {
+				CHECK_TWO();
+				p.AddStream(argv[i+1], std::shared_ptr<In>(new StringIn(argv[i+2])));
+				i += 2;
+			} else {
+				printf("Unexpected %s\n", argv[i]);
+				return 1;
+			}
+		}
+		std::shared_ptr<Out> g_out = std::shared_ptr<Out>(new FOut(argv[argc - 1]));
 
-		while (stream->read(&buf, 1, read) && read == 1) {
-			str += buf;
+		if (!SingleOut(p, g_out)) {
+			printf("Error could not finalize properly\n");
 		}
 
-		printf("%s\n", str.c_str());
+		g_out->close();
 
-		stream->close();
-	} else {
-		printf("Could not get a t1 stream\n");
+
+		printf("Out file %s\n", argv[argc - 1]);
+	} else if (strcmp(argv[1], "read") == 0) {
+
+		if (argc < 4) {
+			printf("Usage read %s read file item", argv[0]);
+			return 1;
+		}
+
+		char const* target = argv[2];
+		char const* el = argv[3];
+		std::shared_ptr<BufferedFileReader> reader = SingleInFile(target);
+
+		if (!reader) {
+			printf("Could not open reader\n");
+			return 1;
+		}
+
+		auto stream = reader->GetStream(el);
+
+		if (stream != nullptr) {
+			char buf;
+			size_t read;
+
+			std::string str;
+
+			while (stream->read(&buf, 1, read) && read == 1) {
+				str += buf;
+			}
+
+			printf("%s\n", str.c_str());
+
+			stream->close();
+		} else {
+			printf("Could not get a t1 stream\n");
+		}
+
 	}
 }
