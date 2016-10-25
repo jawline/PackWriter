@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "writer.h"
+#include "reader.h"
 
 int main(int argc, char** argv) {
 	printf("librepack test\n");
@@ -19,4 +20,23 @@ int main(int argc, char** argv) {
 	if (!p.Finalize(g_out, g_out_dir)) {
 		printf("Error could not finalize properly\n");
 	}
+
+	g_out->close();
+	g_out_dir->close();
+
+	std::shared_ptr<In> g_in_dir = std::shared_ptr<In>(new FIn("./test.pack.dir"));
+
+	Directory dir;
+
+	if (!Directory::From(g_in_dir, dir)) {
+		printf("Error, could not read directory\n");
+	}
+
+	Item t_str_off;
+
+	if (!dir.Get("t1", t_str_off)) {
+		printf("Could not find t1\n");
+	}
+
+	printf("t1 data %zu %zu\n", t_str_off.start, t_str_off.size);
 }

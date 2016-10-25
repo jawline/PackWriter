@@ -37,3 +37,4 @@
 *.dSYM/
 
 *.pack
+*.pack.dir

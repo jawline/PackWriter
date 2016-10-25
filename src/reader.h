@@ -5,9 +5,13 @@
 #include <memory>
 #include <stdio.h>
 #include <iostream>
+#include <vector>
+#include <utility>
 
 class Item {
 public:
+
+	Item() {}
 	
 	Item(size_t start, size_t size) {
 		this->start = start;
@@ -24,6 +28,10 @@ private:
 	static bool NextOff(std::shared_ptr<In> stream, size_t& r);
 
 public:
+	std::vector<std::pair<std::string, Item>> items;
+
+	bool Get(std::string const& name, Item& i) const;
+
 	static bool From(std::shared_ptr<In> stream, Directory& result);
 };
 
