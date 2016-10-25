@@ -96,9 +96,7 @@ BufferedFileReader::BufferedFileReader(std::string const& file, Directory dir) {
 }
 
 std::shared_ptr<In> BufferedFileReader::GetStream(std::string const& file) {
-
 	Item found;
-
 	if (!_dir.Get(file, found)) {
 		return nullptr;
 	} else {
